@@ -70,11 +70,13 @@ In diesem Schritt erstellt ihr eine Action, die die SAP GenAI Hub Orchestration 
 ### 1.1 Action-Projekt anlegen
 
 1. Öffne die **SAP Build Lobby**
-2. Klick **Create**
-3. Wähle **Build an Automated Process > Action**
-4. Name: `AI Core Orchestration - [DEIN NAME]`
-5. Lade die bereitgestellte **OpenAPI Spec** hoch (Datei: `sap-ai-core-orchestration-openapi.json`)
-6. Klick **Create**
+2. Wähle **Connectors > Actions**
+3. **Create**
+4. **Upload API Specification**
+5.  Lade die bereitgestellte **OpenAPI Spec** hoch (Datei: `sap-ai-core-orchestration-openapi.json`)
+6. Name: `AI Core Orchestration - [DEIN NAME]`7.
+8. Klick **Create**
+9. Add Default Post
 
 ### 1.2 URL Prefix konfigurieren
 
@@ -201,7 +203,8 @@ Falls die Felder fehlen oder falsch sind, klick unter Body auf **Add > From Samp
 
 4. Klick **Test**
 5. Warte auf die Antwort (kann 5-10 Sekunden dauern)
-6. Du solltest **200 OK** und ein generiertes Zwischenzeugnis im Response Body sehen
+6. Falls Action Output sich zu dem Output aus drr API unterscheidet - klicke auf Generate Output und fühe die Felder hinzu **Add Output**
+7. Du solltest **200 OK** und ein generiertes Zwischenzeugnis im Response Body sehen
 
 > **Wichtig:** Falls du **404 Not Found** bekommst, prüfe den URL Prefix (Schritt 1.2). Falls du **400 Bad Request** bekommst, prüfe den Request Body.
 
@@ -209,7 +212,8 @@ Falls die Felder fehlen oder falsch sind, klick unter Body auf **Add > From Samp
 
 1. Klick oben rechts auf **Save**
 2. Klick auf **Release**
-3. Die Action ist jetzt in der Action Library verfügbar und kann im Prozess verwendet werden
+3. Klick auf **Publish**
+4. Die Action ist jetzt in der Action Library verfügbar und kann im Prozess verwendet werden
 
 ---
 
@@ -225,7 +229,7 @@ Falls die Felder fehlen oder falsch sind, klick unter Body auf **Add > From Samp
 ## Schritt 3: Custom Variable anlegen (2 Min)
 
 1. Klick auf den **Prozess-Hintergrund** (nicht auf einen Step)
-2. Rechts im Side Panel unter **Variables**: Klick **Configure** oder **+**
+2. Rechts im Side Panel unter **Variables**: **Custom Variables** Klick **Configure** oder **+**
 3. Neue Variable erstellen:
    - Name: `zeugnisText`
    - Type: `String`
@@ -236,20 +240,26 @@ Falls die Felder fehlen oder falsch sind, klick unter Body auf **Add > From Samp
 ## Schritt 4: Trigger-Formular erstellen (10 Min)
 
 1. Klick auf den **Trigger**-Block im Prozess
-2. Wähle **Blank Form**, Name: `Antragsformular_Zwischenzeugnis`
-3. Das Formular oeffnet sich in einem neuen Tab
+2. Submit a Form
+3. Wähle **Blank Form**, Name: `Antragsformular_Zwischenzeugnis`
+4. Das Formular oeffnet sich in einem neuen Tab - anderfalls drücke auf die 3 Punkte **Open Editor**
 
 ### Formular gestalten:
 
 4. Ziehe ein **Dropdown**-Feld auf das Formular
-5. Konfiguriere rechts:
+5. **Data Source** Data Source: `get_Employees`
+6. **Destination Variable**: Create Destination Variable  Destination Variable: `S4_Destination`
+7. Select **S4_Destination**
+8. **Available Data** Available Data: `_name`
+9. Haken bei **Required**
+10. Konfig sollte so aussehen:
    - Label: `Mitarbeiter auswählen`
    - **Data to display**: Wähle `Data Source`
    - Data Source: `get_Employees`
    - Destination Variable: `S4_Destination`
    - Available Data: `_name`
    - Haken bei **Required**
-6. **Save**
+11. **Save**
 
 ---
 
@@ -271,6 +281,8 @@ Falls die Felder fehlen oder falsch sind, klick unter Body auf **Add > From Samp
 3. Name: `Zwischenzeugnis Approval`
 
 ### Formular gestalten:
+
+3 Punkte **Open Editor**
 
 4. Füge folgende Felder hinzu:
 
@@ -295,7 +307,7 @@ Falls die Felder fehlen oder falsch sind, klick unter Body auf **Add > From Samp
 7. Zurück im Prozess, klick auf den Approval Step
 8. **General** Tab:
    - Subject: `Zwischenzeugnis genehmigen`
-   - Recipients > Users: `Started By`
+   - Recipients > Users: `Started By` (Process Metadata**)
 9. **Inputs** Tab - Mappe die Felder:
    - Name = `_name` (von Get Employees)
    - Abteilung = `department` (von Get Employees)
@@ -307,10 +319,11 @@ Falls die Felder fehlen oder falsch sind, klick unter Body auf **Add > From Samp
 ## Schritt 7: GenAI Hub Action einbinden (10 Min)
 
 1. Im **Approve**-Zweig: Klick auf **+**
-2. Wähle **Action > Browse Library**
-3. Suche nach `AI Core Orchestration` (eure eigene Action aus Schritt 1)
+2. Wähle **Action > Browse All Actions**
+3. Suche nach `AI Core Orchestration` (eure eigene Action aus Schritt 1) oder suche nach dem eigenen Namen
 
 ### General Tab:
+- **Create Destination Variable**
 - Destination Variable: `AI_Core`
 
 ### Inputs Tab:
